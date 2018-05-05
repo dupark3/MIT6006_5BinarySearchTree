@@ -18,7 +18,7 @@ int main(){
     my_tree.insert(6);
     my_tree.insert(0);
     my_tree.insert(1);
-    my_tree.print_sorted(); // -10 0 2 3 4 5 6 8 10
+    my_tree.print_sorted(); // 0 1 2 3 4 5 6 8 10
 
     /*
               5
@@ -33,12 +33,12 @@ int main(){
     Node<int>* node = my_tree.search(1);
     cout << "Found: " << node->get_value() << endl;;
 
-    cout << endl << "Removing -10, 4, 5, and 6..." << endl;
+    cout << endl << "Removing 1, 4, 5, and 8..." << endl;
     my_tree.remove(1);
     my_tree.remove(4);
     my_tree.remove(5);
-    my_tree.remove(6);
-    my_tree.print_sorted();
+    my_tree.remove(8);
+    my_tree.print_sorted(); // 0 2 3 6 10
 
     return 0;
 }

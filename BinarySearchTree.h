@@ -1,7 +1,7 @@
 #include <iostream>
 
 /* TODO : 
-        Print recursion
+        Refactor remove(Node, Node) to smaller functions    
         Keep a count of duplicates
 */
 
@@ -140,32 +140,44 @@ void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent, const T& val){
 
 template <class T>
 void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
-    // four scenarios: node to delete has no children, left child only, 
-    // right child only, or both children
+    // node is a leaf, set his parent's left or right pointer to null and delete node
     if (!node->left && !node->right){
-        std::cout << node->value << " no children" << std::endl;
         if (parent->left == node) 
             parent->left = 0;
         else if (parent->right == node) 
             parent->right = 0;
         delete node;
-    } else if (node->left && !node->right){
-        std::cout << node->value << " left child" << std::endl;
+    } 
+
+    // node has one left child, set node's parent's correct pointer to the node's left child
+    else if (node->left && !node->right){
         if (parent->left == node)
             parent->left = node->left;
         else if (parent->right == node)
             parent->right = node->left;
         delete node;
-    } else if (!node->left && node->right){
-        std::cout << node->value << " right child" << std::endl;
+    } 
+
+    // node has one right child, set node's parent's correct pointer to the node's right child
+    else if (!node->left && node->right){
         if (parent->left == node)
             parent->left = node->right;
         else if (parent->right == node)
             parent->right = node->right;
         delete node;
-    } else if (node->left && node->right){
-        std::cout << node->value << " both children" << std::endl;
-        
+    }
+
+    // node has both children, copy inorder successor's value and remove that node
+    else if (node->left && node->right){
+        // find order successor and copy its value into the node with value we are removing
+        Node<T>* successor = node->right;
+        Node<T>* successors_parent = node;
+        while(successor->left){
+            successors_parent = successor;
+            successor = successor->left;
+        }
+        node->value = successor->value;
+        remove(successor, successors_parent);
     }
 }
 
