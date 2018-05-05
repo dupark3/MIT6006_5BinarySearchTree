@@ -151,60 +151,44 @@ void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
         else if (parent->right == node) 
             parent->right = 0;
         delete node;
-    } 
+    }
 
     // node has one left child, set node's parent's correct pointer to the node's left child
     else if (node->left && !node->right){
-        if (parent->left == node)
+        if (parent->left == node){
             parent->left = node->left;
-        else if (parent->right == node)
+            parent->left->parent = parent;
+        }
+        else if (parent->right == node){
             parent->right = node->left;
+            parent->right->parent = parent;
+        }
         delete node;
     } 
 
     // node has one right child, set node's parent's correct pointer to the node's right child
     else if (!node->left && node->right){
-        if (parent->left == node)
+        if (parent->left == node){
             parent->left = node->right;
-        else if (parent->right == node)
+            parent->left->parent = parent;
+        }
+        else if (parent->right == node){
             parent->right = node->right;
+            parent->right->parent = parent;
+        }
         delete node;
     }
 
     // node has both children, copy inorder successor's value and remove that node
     else if (node->left && node->right){
         // find inorder successor and copy its value into the node with value we are removing
-        // this does not cover all cases of finding the inorder successor
-
-        // finding inorder successor 
-        // if no right child and it is a left child itself, parent is the successor
-        // if no right child and it is a right child itself, parent's parent is the successor
-        // if right child, the left-most child of right child is the successor 
-
         Node<T>* successor;
-
-        // if right child exists, find the left-most leaf on the right side
-        if (node->right){
-            successor = node->right;
-            while(successor->left){                
-                successor = successor->left;
-            }
-            node->value = successor->value;
-            remove(successor, successor->parent);
-        } 
-
-        // if right child doesn't exist, find parent or parent's parent
-        else if (!node->right){ 
-            if (parent->left == node){
-                successor = parent;
-                node->value = successor->value;
-                remove(successor, successor->parent);
-            } else if (parent->right == node){
-                successor = parent->parent;
-                node->value = successor->value;
-                remove(successor, successor->parent);
-            }
+        successor = node->right;
+        while(successor->left){                
+            successor = successor->left;
         }
+        node->value = successor->value;
+        remove(successor, successor->parent);
     }
 }
 
