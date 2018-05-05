@@ -21,7 +21,11 @@ public:
 
 private:
     Node<T>* root;
+    
+    // overloaded functions to serve as recursive calls within search, insert, remove, print
     Node<T>* search(Node<T>*&, const T&);
+    void remove(Node<T>*, Node<T>*, const T&);
+    void remove(Node<T>*, Node<T>*);
     void insert(Node<T>*&, Node<T>*&, const T&);
     void print_sorted(Node<T>*);
 };
@@ -108,7 +112,52 @@ void BinarySearchTree<T>::insert(Node<T>*& child, Node<T>*& parent, const T& val
     }
 }
 
+template <class T>
+void BinarySearchTree<T>::remove(const T& val){
+    if (root){
+        if (val < root->value){
+            remove(root->left, root, val);
+        } else if (val > root->value){
+            remove(root->right, root, val);
+        } else if (val == root->value){
+            remove(root, 0); // value found, delete this root
+        }
+    } 
+}
 
+template <class T>
+void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent, const T& val){
+    if (node){
+        if (val < node->value){
+            remove(node->left, node, val);
+        } else if (val > node->value){
+            remove(node->right, node, val);
+        } else if (val == node->value){
+            remove(node, parent); // value found, delete this node
+        }
+    } 
+}
+
+template <class T>
+void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
+    // four scenarios: node to delete has no children, left child only, 
+    // right child only, or both children
+    if (!node->left && !node->right){
+        std::cout << node->value << " No children" << std::endl;
+        if (parent->left == node) parent->left = 0;
+        else if (parent->right == node) parent->right = 0;
+        delete node;
+    } else if (node->left && !node->right){
+        std::cout << node->value << " left child" << std::endl;
+
+    } else if (!node->left && node->right){
+        std::cout << node->value << " right child" << std::endl;
+
+    } else if (node->left && node->right){
+        std::cout << node->value << " both children" << std::endl;
+
+    }
+}
 
 template <class T>
 void BinarySearchTree<T>::print_sorted(){
