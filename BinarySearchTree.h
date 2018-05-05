@@ -17,6 +17,7 @@ public:
     Node<T>* search(const T&);
     void insert(const T&);
     void remove(const T&);
+    void print_range(const T&, const T&);
     void print_sorted();
 
 private:
@@ -35,8 +36,8 @@ template <class T>
 class Node{
 friend class BinarySearchTree<T>;
 public:
-    Node() : left(0), right(0) { }
-    Node(T val) : value(val), left(0), right(0) { }
+    Node() : left(0), right(0), parent(0) { }
+    Node(T val) : value(val), left(0), right(0), parent(0) { }
 
     T get_value() { return value; }
 
@@ -44,6 +45,7 @@ private:
     T value;
     Node<T>* left;
     Node<T>* right;
+    Node<T>* parent;
 };
 
 
@@ -105,9 +107,11 @@ void BinarySearchTree<T>::insert(Node<T>*& child, Node<T>*& parent, const T& val
         if (val < parent->value){
             child = new Node<T>(val);
             parent->left = child;
+            child->parent = parent;
         } else if (val > parent->value){
             child = new Node<T>(val);
             parent->right = child;
+            child->parent = parent;
         }
     }
 }
@@ -169,16 +173,47 @@ void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
 
     // node has both children, copy inorder successor's value and remove that node
     else if (node->left && node->right){
-        // find order successor and copy its value into the node with value we are removing
-        Node<T>* successor = node->right;
-        Node<T>* successors_parent = node;
-        while(successor->left){
-            successors_parent = successor;
-            successor = successor->left;
+        // find inorder successor and copy its value into the node with value we are removing
+        // this does not cover all cases of finding the inorder successor
+
+        // finding inorder successor 
+        // if no right child and it is a left child itself, parent is the successor
+        // if no right child and it is a right child itself, parent's parent is the successor
+        // if right child, the left-most child of right child is the successor 
+
+        Node<T>* successor;
+
+        // if right child exists, find the left-most leaf on the right side
+        if (node->right){
+            successor = node->right;
+            while(successor->left){                
+                successor = successor->left;
+            }
+            node->value = successor->value;
+            remove(successor, successor->parent);
+        } 
+
+        // if right child doesn't exist, find parent or parent's parent
+        else if (!node->right){ 
+            if (parent->left == node){
+                successor = parent;
+                node->value = successor->value;
+                remove(successor, successor->parent);
+            } else if (parent->right == node){
+                successor = parent->parent;
+                node->value = successor->value;
+                remove(successor, successor->parent);
+            }
         }
-        node->value = successor->value;
-        remove(successor, successors_parent);
     }
+}
+
+template <class T>
+void BinarySearchTree<T>::print_range(const T& min, const T& max){
+    // search min, if found, print it
+    // loop: find the inorder successor, print it if less than max
+    // if more than max, we are done. 
+    // search min, if not found, 
 }
 
 template <class T>

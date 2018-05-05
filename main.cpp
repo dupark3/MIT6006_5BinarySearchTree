@@ -38,6 +38,9 @@ int main(){
     my_tree.remove(4);
     my_tree.remove(5);
     my_tree.remove(8);
+    my_tree.remove(3);
+    my_tree.remove(6);
+    my_tree.remove(2);
     my_tree.print_sorted(); // 0 2 3 6 10
 
     return 0;
