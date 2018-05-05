@@ -143,19 +143,29 @@ void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
     // four scenarios: node to delete has no children, left child only, 
     // right child only, or both children
     if (!node->left && !node->right){
-        std::cout << node->value << " No children" << std::endl;
-        if (parent->left == node) parent->left = 0;
-        else if (parent->right == node) parent->right = 0;
+        std::cout << node->value << " no children" << std::endl;
+        if (parent->left == node) 
+            parent->left = 0;
+        else if (parent->right == node) 
+            parent->right = 0;
         delete node;
     } else if (node->left && !node->right){
         std::cout << node->value << " left child" << std::endl;
-
+        if (parent->left == node)
+            parent->left = node->left;
+        else if (parent->right == node)
+            parent->right = node->left;
+        delete node;
     } else if (!node->left && node->right){
         std::cout << node->value << " right child" << std::endl;
-
+        if (parent->left == node)
+            parent->left = node->right;
+        else if (parent->right == node)
+            parent->right = node->right;
+        delete node;
     } else if (node->left && node->right){
         std::cout << node->value << " both children" << std::endl;
-
+        
     }
 }
 
