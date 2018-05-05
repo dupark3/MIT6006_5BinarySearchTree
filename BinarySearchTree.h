@@ -22,7 +22,7 @@ public:
 
 private:
     Node<T>* root;
-    
+    Node<T>* inorder_successor(Node<T>*);
     // overloaded functions to serve as recursive calls within search, insert, remove, print
     Node<T>* search(Node<T>*&, const T&);
     void remove(Node<T>*, Node<T>*, const T&);
@@ -182,14 +182,37 @@ void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
     // node has both children, copy inorder successor's value and remove that node
     else if (node->left && node->right){
         // find inorder successor and copy its value into the node with value we are removing
-        Node<T>* successor;
+        Node<T>* successor = inorder_successor(node);
+        node->value = successor->value;
+        remove(successor, successor->parent);
+    }
+}
+
+template <class T>
+Node<T>* BinarySearchTree<T>::inorder_successor(Node<T>* node){
+    Node<T>* successor;
+    // if it has a right child, inorder successor is the right child's left most leaf
+    if (node->right){
         successor = node->right;
         while(successor->left){                
             successor = successor->left;
         }
-        node->value = successor->value;
-        remove(successor, successor->parent);
+    } 
+
+    // if only left child, inorder successor is its parent
+    else if (node->left && !node->right){
+        successor = node->parent;
+    } 
+
+    // if a leaf, keep going up the parent pointer until its value is larger
+    else if (!node->left && !node->right){
+        successor = node->parent;
+        while(successor->value < node->value){
+            successor = successor->parent;
+        }
     }
+
+    return successor;
 }
 
 template <class T>
@@ -197,7 +220,14 @@ void BinarySearchTree<T>::print_range(const T& min, const T& max){
     // search min, if found, print it
     // loop: find the inorder successor, print it if less than max
     // if more than max, we are done. 
-    // search min, if not found, 
+    // search min, if not found, the spot's parent is the inorder successor
+    Node<T>* min_node = search(min);
+    if(min_node){
+        std::cout << min_node->value << ' ';
+        while(min_node->value < max){
+            min_node = inorder_successor(min_node);
+        }
+    }    
 }
 
 template <class T>
