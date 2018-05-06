@@ -15,7 +15,7 @@ public:
     BinarySearchTree(T val) : root(new Node<T>(val)) { }
 
     Node<T>* search(const T&);
-    void insert(const T&);
+    Node<T>* insert(const T&);
     void remove(const T&);
     void print_range(const T&, const T&);
     void print_sorted();
@@ -27,7 +27,7 @@ private:
     Node<T>* search(Node<T>*&, const T&);
     void remove(Node<T>*, Node<T>*, const T&);
     void remove(Node<T>*, Node<T>*);
-    void insert(Node<T>*&, Node<T>*&, const T&);
+    Node<T>* insert(Node<T>*&, Node<T>*&, const T&);
     void print_sorted(Node<T>*);
 };
 
@@ -82,26 +82,27 @@ Node<T>* BinarySearchTree<T>::search(Node<T>*& node, const T& val){
 }
 
 template <class T>
-void BinarySearchTree<T>::insert(const T& val){
+Node<T>* BinarySearchTree<T>::insert(const T& val){
     if (root){ // if root exists, check val against root's value. then recursive call
         if(val < root->value){
-            insert(root->left, root, val);            
+            return insert(root->left, root, val);
         }
         else if (val > root->value){
-            insert(root->right, root, val);
+            return insert(root->right, root, val);
         }
     } else { // empty tree, insert value here
         root = new Node<T>(val);
+        return root;
     }
 }
 
 template <class T>
-void BinarySearchTree<T>::insert(Node<T>*& child, Node<T>*& parent, const T& val){
+Node<T>* BinarySearchTree<T>::insert(Node<T>*& child, Node<T>*& parent, const T& val){
     if (child){ 
         if(val < child->value){
-            insert(child->left, child, val);
+            return insert(child->left, child, val);
         } else if (val > child->value){
-            insert(child->right, child, val);
+            return insert(child->right, child, val);
         }
     } else { // node does not exist, child is where we insert the element
         if (val < parent->value){
@@ -113,6 +114,7 @@ void BinarySearchTree<T>::insert(Node<T>*& child, Node<T>*& parent, const T& val
             parent->right = child;
             child->parent = parent;
         }
+        return child;
     }
 }
 
@@ -223,11 +225,15 @@ void BinarySearchTree<T>::print_range(const T& min, const T& max){
     // search min, if not found, the spot's parent is the inorder successor
     Node<T>* min_node = search(min);
     if(min_node){
-        std::cout << min_node->value << ' ';
         while(min_node->value < max){
+            std::cout << min_node->value << ' ';
             min_node = inorder_successor(min_node);
         }
-    }    
+    } else {
+        insert(min);
+        min_node = search(min);
+
+    }
 }
 
 template <class T>
