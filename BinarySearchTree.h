@@ -1,7 +1,7 @@
 #include <iostream>
 
-/* TODO : 
-        Refactor remove(Node, Node) to smaller functions    
+/* TODO :
+        Refactor remove(Node, Node) to smaller functions
         Keep a count of duplicates
 */
 
@@ -98,7 +98,7 @@ Node<T>* BinarySearchTree<T>::insert(const T& val){
 
 template <class T>
 Node<T>* BinarySearchTree<T>::insert(Node<T>*& child, Node<T>*& parent, const T& val){
-    if (child){ 
+    if (child){
         if(val < child->value){
             return insert(child->left, child, val);
         } else if (val > child->value){
@@ -128,7 +128,7 @@ void BinarySearchTree<T>::remove(const T& val){
         } else if (val == root->value){
             remove(root, 0); // value found, delete this root
         }
-    } 
+    }
 }
 
 template <class T>
@@ -141,16 +141,16 @@ void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent, const T& val){
         } else if (val == node->value){
             remove(node, parent); // value found, delete this node
         }
-    } 
+    }
 }
 
 template <class T>
 void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
     // node is a leaf, set his parent's left or right pointer to null and delete node
     if (!node->left && !node->right){
-        if (parent->left == node) 
+        if (parent->left == node)
             parent->left = 0;
-        else if (parent->right == node) 
+        else if (parent->right == node)
             parent->right = 0;
         delete node;
     }
@@ -166,7 +166,7 @@ void BinarySearchTree<T>::remove(Node<T>* node, Node<T>* parent){
             parent->right->parent = parent;
         }
         delete node;
-    } 
+    }
 
     // node has one right child, set node's parent's correct pointer to the node's right child
     else if (!node->left && node->right){
@@ -194,22 +194,28 @@ template <class T>
 Node<T>* BinarySearchTree<T>::inorder_successor(Node<T>* node){
     Node<T>* successor;
     // if it has a right child, inorder successor is the right child's left most leaf
+    if (!node){
+        return 0;
+    }
+
     if (node->right){
         successor = node->right;
-        while(successor->left){                
+        while(successor->left){
             successor = successor->left;
         }
-    } 
+    }
 
     // if only left child, inorder successor is its parent
     else if (node->left && !node->right){
         successor = node->parent;
-    } 
+    }
 
     // if a leaf, keep going up the parent pointer until its value is larger
     else if (!node->left && !node->right){
         successor = node->parent;
         while(successor->value < node->value){
+            if (!successor->parent)
+                return 0;
             successor = successor->parent;
         }
     }
@@ -221,19 +227,25 @@ template <class T>
 void BinarySearchTree<T>::print_range(const T& min, const T& max){
     // search min, if found, print it
     // loop: find the inorder successor, print it if less than max
-    // if more than max, we are done. 
+    // if more than max, we are done.
     // search min, if not found, the spot's parent is the inorder successor
     Node<T>* min_node = search(min);
     if(min_node){
-        while(min_node->value < max){
+        while(min_node && min_node->value <= max){
             std::cout << min_node->value << ' ';
             min_node = inorder_successor(min_node);
         }
     } else {
-        insert(min);
-        min_node = search(min);
+        min_node = insert(min);
 
+        while(min_node && min_node->value <= max){
+            min_node = inorder_successor(min_node);
+            if (min_node)
+                std::cout << min_node->value << ' ';
+        }
+        remove(min);
     }
+    std::cout << std::endl;
 }
 
 template <class T>
