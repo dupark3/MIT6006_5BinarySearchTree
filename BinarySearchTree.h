@@ -31,7 +31,7 @@ private:
     void remove(Node<T>*, Node<T>*);
     Node<T>* insert(Node<T>*&, Node<T>*&, const T&);
     void print_sorted(Node<T>*);
-    void get_vertical_order(Node<T>*, std::map< int, std::vector<int> >&, int&);
+    void get_vertical_order(Node<T>*, std::map< int, std::vector<T> >&, int&);
 };
 
 
@@ -281,7 +281,7 @@ void BinarySearchTree<T>::print_sorted(Node<T>* node){
 
 template <class T>
 void BinarySearchTree<T>::print_vertical_order(){
-    std::map< int, std::vector<int> > my_map;
+    std::map< int, std::vector<T> > my_map;
     if (root){
         int vertical_order = 0;
         my_map[vertical_order].push_back(root->value);
@@ -295,7 +295,7 @@ void BinarySearchTree<T>::print_vertical_order(){
 
 template <class T>
 void BinarySearchTree<T>::get_vertical_order(Node<T>* node, 
-                                             std::map< int, std::vector<int> >& my_map,
+                                             std::map< int, std::vector<T> >& my_map,
                                              int& vertical_order){
     my_map[vertical_order].push_back(node->value);
     if (node->left)
