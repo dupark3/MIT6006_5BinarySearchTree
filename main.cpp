@@ -44,6 +44,9 @@ int main(){
     cout << endl << "Printing all elements within range of (7, 10)... " << endl;
     my_tree.print_range(7, 10);
 
+    cout << endl << "Printing in vertical order..." << endl;
+    my_tree.print_vertical_order();
+
     cout << endl << "Removing 1..." << endl;
     my_tree.remove(1);
     my_tree.print_sorted();
