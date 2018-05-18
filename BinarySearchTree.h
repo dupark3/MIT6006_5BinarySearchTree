@@ -51,6 +51,8 @@ private:
     Node<T>* parent;
 };
 
+template <class T>
+void print_map(std::map< int, std::vector<T> >&);
 
 /******************* Member and Nonmember Function Definitions ***************/
 
@@ -285,12 +287,16 @@ void BinarySearchTree<T>::print_vertical_order(){
     if (root){
         int vertical_order = 0;
         my_map[vertical_order].push_back(root->value);
-        if (root->left)
+        if (root->left){
             get_vertical_order(root->left, my_map, --vertical_order);
-        if (root->right)
+            ++vertical_order;
+        }
+        if (root->right){
             get_vertical_order(root->right, my_map, ++vertical_order);
+            --vertical_order;
+        }
     }
-    // print_map(my_map);
+    print_map(my_map);
 }
 
 template <class T>
@@ -298,9 +304,22 @@ void BinarySearchTree<T>::get_vertical_order(Node<T>* node,
                                              std::map< int, std::vector<T> >& my_map,
                                              int& vertical_order){
     my_map[vertical_order].push_back(node->value);
-    if (node->left)
+    if (node->left){
         get_vertical_order(node->left, my_map, --vertical_order);
-    if (node->right)
+        ++vertical_order;
+    }
+    if (node->right){
         get_vertical_order(node->right, my_map, ++vertical_order);
+        --vertical_order;
+    }
 }
 
+template <class T>
+void print_map(std::map< int, std::vector<T> >& my_map){
+    for (int i = -5; i != 5; ++i){
+        for (int j = 0; j != my_map[i].size(); ++j){
+            std::cout << my_map[i][j] << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
