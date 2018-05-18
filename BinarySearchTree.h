@@ -1,7 +1,8 @@
 #include <iostream>
+#include <map>
+#include <vector>
 
 /* TODO :
-        Refactor remove(Node, Node) to smaller functions
         Keep a count of duplicates
 */
 
@@ -19,6 +20,7 @@ public:
     void remove(const T&);
     void print_range(const T&, const T&);
     void print_sorted();
+    void print_vertical_order();
 
 private:
     Node<T>* root;
@@ -273,5 +275,13 @@ void BinarySearchTree<T>::print_sorted(Node<T>* node){
         if (node->right){
             print_sorted(node->right);
         }
+    }
+}
+
+template <class T>
+void BinarySearchTree<T>::print_vertical_order(){
+    std::map< int, std::vector<int> > my_map;
+    if (root){
+        my_map[0] = root->value;
     }
 }
