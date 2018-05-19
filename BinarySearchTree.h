@@ -317,9 +317,8 @@ void BinarySearchTree<T>::get_vertical_order(Node<T>* node,
 template <class T>
 void print_map(std::map< int, std::vector<T> >& my_map){
     int lowest_key = my_map.begin()->first;
-    int highest_key = my_map.end()->first;
-    std::cout << "lowest: " << lowest_key << " highest: " << highest_key << std::endl;
-    for (int i = lowest_key; i != highest_key; ++i){
+    int highest_key = my_map.rbegin()->first;
+    for (int i = lowest_key; i != highest_key + 1; ++i){
         int vector_size = my_map[i].size();
         for (int j = 0; j != vector_size; ++j){
             std::cout << my_map[i][j] << ' ';
